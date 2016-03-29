@@ -1,6 +1,6 @@
 #include "tdt.h"
 
-tdt* tdt_crear(char* identificacion) {
+/*tdt* tdt_crear(char* identificacion) {
     tdt *tabla = (tdt *)malloc(sizeof(tdt));
 
     char* myId = (char*)malloc(sizeof(char*));
@@ -11,7 +11,7 @@ tdt* tdt_crear(char* identificacion) {
     tabla->cantidad = 0;
     
     return tabla;
-}
+}*/
 
 void tdt_recrear(tdt** tabla, char* identificacion) {
     tdt *pTabla = *tabla;
