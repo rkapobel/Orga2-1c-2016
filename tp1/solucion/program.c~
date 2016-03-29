@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include "tdt.h"
+
+int main(int argc, char *argv[]) {      
+      /* creo un vector de bloques con datos al azar */
+      uint32_t i,j,n = 2;
+      bloque* arrayBloques = (bloque*)malloc(sizeof(bloque)*(n));
+      bloque** bb = (bloque**)malloc(sizeof(bloque*)*(n+1));
+      bloque* arrayBloquesTraducir = (bloque*)malloc(sizeof(bloque)*(n));
+      bloque** bbTraducir = (bloque**)malloc(sizeof(bloque*)*(n+1));
+      uint32_t *fastFill = (uint32_t*)(arrayBloques);
+      for(i=0;i<n*sizeof(bloque)/sizeof(uint32_t);i++)
+        fastFill[i] = rand();
+      for(i=0;i<n;i++) {
+        bb[i] = &(arrayBloques[i]);
+        bbTraducir[i] = &(arrayBloquesTraducir[i]);
+        bbTraducir[i]->clave[0] = bb[i]->clave[0];
+        bbTraducir[i]->clave[1] = bb[i]->clave[1];
+        bbTraducir[i]->clave[2] = bb[i]->clave[2];
+        for(j=0;j<15;j++)
+          bbTraducir[i]->valor[j] = 0;
+      }
+      bb[n]=0;
+      bbTraducir[n]=0;
+        
+      return 0;
+}
