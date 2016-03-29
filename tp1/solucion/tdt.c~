@@ -1,18 +1,22 @@
 #include "tdt.h"
 
-/*tdt* tdt_crear(char* identificacion) {
+tdt* tdt_crear(char* identificacion) {
     tdt *tabla = (tdt *)malloc(sizeof(tdt));
-    tabla->identificacion = identificacion;
+
+    char* myId = (char*)malloc(sizeof(char*));
+    strcpy(myId, identificacion);
+
+    tabla->identificacion = myId;
     tabla->primera = NULL;
     tabla->cantidad = 0;
     
     return tabla;
-}*/
+}
 
 void tdt_recrear(tdt** tabla, char* identificacion) {
     tdt *pTabla = *tabla;
     if(identificacion != NULL)
-        pTabla->identificacion = identificacion;
+        *(pTabla->identificacion) = *identificacion;
         
     pTabla->cantidad = 0;
     
@@ -150,7 +154,9 @@ void tdt_traducir(tdt* tabla, uint8_t* clave, uint8_t* valor) {
 void tdt_destruir(tdt** tabla) {
     tdt* pTabla = *tabla;
     
-    pTabla->identificacion = NULL;
+    char* myId = pTabla->identificacion;
+    if(myId != NULL)
+        free(myId);    
        
     tdt_recrear(tabla, NULL);
     

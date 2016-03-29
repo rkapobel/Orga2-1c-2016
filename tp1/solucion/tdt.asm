@@ -41,8 +41,23 @@ section .text
 tdt_crear:
 	PUSH RBP
 	MOV RBP, RSP
-	MOV R9, RDI ; guardo identificacion
-	MOV RDI, TDT_SIZE ; piso identificacion 
+	MOV R9, RDI ; almaceno identificacion
+    XOR RCX, RCX ; contador de bytes para longitud de la nueva identificacion 
+    XOR R10, R10 ; almaceno los char de identificacion
+.contar:
+    MOV R10B, [R9 + RCX] ; recorro los bytes de identificacion hasta encontrar un NULL   
+    CMP R10B, ZERO ; si es el final. PRE: un string siempre termina en 0x0
+    JE .seguir    
+    ADD RCX, 1
+    JMP .contar
+.seguir:
+    MOV RDI, RCX; tamaño de *(identificacion)
+    CALL malloc ; char* myId
+    MOV RDI, RAX ; puntero a myId: destino
+    MOV RSI, R9 ; source
+    MOV R9, RAX ; almaceno el puntero a myId
+    CALL strcpy ; copia desde identificacion a myId
+    MOV RDI, TDT_SIZE ; piso identificacion 
 	CALL malloc
 	MOV QWORD [RAX + TDT_OFFSET_IDENTIFICACION], R9 ; tabla->identificacion = identificacion	
 	MOV QWORD [RAX + TDT_OFFSET_PRIMERA], NULL ; tabla->primera = NULL
@@ -70,7 +85,25 @@ tdt_recrear:
 	MOV RDX, [RDI] ; *(tabla)
 	CMP RSI, NULL ; identificacion == NULL?
 	JE .identificacionNull
-	MOV QWORD [RDX + TDT_OFFSET_IDENTIFICACION], RSI ; pTabla->identificacion = identificacion
+    XOR RCX, RCX ; contador de bytes para longitud de la nueva identificacion
+    XOR R10, R10 ; almaceno los char de identificacion
+.contar:
+    MOV R10B, [RSI + RCX]
+    CMP R10B, ZERO
+    JE .seguir
+    ADD RCX, 1
+    JMP .contar
+
+    MOV RDI, RCX
+    call malloc ; nuevo char* myId
+    XOR R10, R10 
+    MOV R10, RAX ; almaceno myId    
+    MOV RDI, RAX ;  almaceno myId en el primer parametro de strcpy - RSI ya contiene identificacion
+    call strcpy ; copia desde identificacion a myId
+    
+    MOV RDI, [RDX + TDT_OFFSET_IDENTIFICACION] ; pTabla->identificacion
+    call free
+    MOV QWORD [RDX + TDT_OFFSET_IDENTIFICACION], R10 ; pTabla->identificacion = myId
 
 .identificacionNull:
     MOV DWORD [RDX + TDT_OFFSET_CANTIDAD], ZERO
