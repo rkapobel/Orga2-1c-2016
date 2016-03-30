@@ -9,7 +9,7 @@ tdt* tdt_crear(char* identificacion) {
         char letra = 0;
         int contadorBytes = 0;
         contar:
-            char letra = identificacion[contadorBytes];
+            letra = identificacion[contadorBytes];
             contadorBytes += 1;
             if(letra != 0)
                 goto contar;
