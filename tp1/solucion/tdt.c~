@@ -1,23 +1,56 @@
 #include "tdt.h"
 
-/*tdt* tdt_crear(char* identificacion) {
+tdt* tdt_crear(char* identificacion) {
     tdt *tabla = (tdt *)malloc(sizeof(tdt));
 
-    char* myId = (char*)malloc(sizeof(char*));
-    strcpy(myId, identificacion);
+    char* myId = NULL;
+
+    if(identificacion != NULL) {
+        char letra = 0;
+        int contadorBytes = 0;
+        contar:
+            char letra = identificacion[contadorBytes];
+            contadorBytes += 1;
+            if(letra != 0)
+                goto contar;
+
+            contadorBytes += 1;
+
+        char* myId = (char *)malloc(contadorBytes);
+
+        strcpy(myId, identificacion);
+    }
 
     tabla->identificacion = myId;
     tabla->primera = NULL;
     tabla->cantidad = 0;
     
     return tabla;
-}*/
+}
 
 void tdt_recrear(tdt** tabla, char* identificacion) {
     tdt *pTabla = *tabla;
-    if(identificacion != NULL)
-        *(pTabla->identificacion) = *identificacion;
-        
+
+    if(identificacion != NULL) {
+        char letra;
+        int contadorBytes = 0;
+        contar:
+            letra = identificacion[contadorBytes];
+            contadorBytes += 1;
+            if(letra != 0)
+                goto contar;
+
+            contadorBytes += 1;
+
+        char* myId = (char *)malloc(contadorBytes);
+
+        strcpy(myId, identificacion);
+
+        free(pTabla->identificacion);
+
+        pTabla->identificacion = myId;        
+    }
+    
     pTabla->cantidad = 0;
     
     uint16_t i, j;
