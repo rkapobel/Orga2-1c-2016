@@ -28,16 +28,16 @@ void tdt_recrear(tdt** tabla, char* identificacion) {
         goto salir;
 
     vaciarSt1:; 
-    tdtN2 *st2 = pTabla->primera->entradas[(uint8_t)i];
+    tdtN2 *st2 = pTabla->primera->entradas[i];
     if(st2 == NULL)
         goto continuarSt1;
             
     vaciarSt2:; 
-    tdtN3 *st3 = st2->entradas[(uint8_t)j]; 
+    tdtN3 *st3 = st2->entradas[j]; 
         if(st3 == NULL)
             goto continuarSt2;
         free(st3);
-        st2->entradas[(uint8_t)j] = NULL;
+        st2->entradas[j] = NULL;
         goto continuarSt2;
         
     continuarSt1: 
@@ -54,7 +54,7 @@ void tdt_recrear(tdt** tabla, char* identificacion) {
             goto vaciarSt2;
         j = 0;
         free(st2);
-        pTabla->primera->entradas[(uint8_t)i] = NULL;
+        pTabla->primera->entradas[i] = NULL;
         goto continuarSt1;    
                
     salir: 
@@ -126,23 +126,23 @@ void tdt_traducir(tdt* tabla, uint8_t* clave, uint8_t* valor) {
     if(tabla->primera == NULL)
         goto salir;
     
-    tdtN2* st2 = tabla->primera->entradas[(int)clave[0]];
+    tdtN2* st2 = tabla->primera->entradas[clave[0]];
     
     if(st2 == NULL)
         goto salir;
 
-    tdtN3* st3 = st2->entradas[(int)clave[1]];
+    tdtN3* st3 = st2->entradas[clave[1]];
 
     if(st3 == NULL)
         goto salir;
        
-    if(st3->entradas[(int)clave[2]].valido == 0)
+    if(st3->entradas[clave[2]].valido == 0)
         goto salir;
    
     uint8_t i = 0;
    
     ciclo:
-        valor[i] = st3->entradas[(int)clave[2]].valor.val[i];
+        valor[i] = st3->entradas[clave[2]].valor.val[i];
         i += 1;
         if(i < 15)
             goto ciclo;
@@ -171,14 +171,14 @@ void tdt_agregar(tdt* tabla, uint8_t* clave, uint8_t* valor) {
     
     continuarN1:;
     
-    tdtN2* st2 = tabla->primera->entradas[(uint8_t)clave[0]];
+    tdtN2* st2 = tabla->primera->entradas[clave[0]];
     
     if(st2 == NULL)
         goto tdtN2Empty;
 
     continuarN2:;
    
-    tdtN3* st3 = st2->entradas[(uint8_t)clave[1]];
+    tdtN3* st3 = st2->entradas[clave[1]];
 
     if(st3 == NULL)
         goto tdtN3Empty;
@@ -187,8 +187,8 @@ void tdt_agregar(tdt* tabla, uint8_t* clave, uint8_t* valor) {
         
     uint8_t i = 0;
   
-    if(st3->entradas[(uint8_t)clave[2]].valido == 0) {
-        st3->entradas[(uint8_t)clave[2]].valido = 1;
+    if(st3->entradas[clave[2]].valido == 0) {
+        st3->entradas[clave[2]].valido = 1;
         tabla->cantidad += 1;
     }
    
@@ -196,7 +196,7 @@ void tdt_agregar(tdt* tabla, uint8_t* clave, uint8_t* valor) {
         if(i == 15) {
             goto salir;
         }    
-        st3->entradas[(int)clave[2]].valor.val[i] = valor[i];
+        st3->entradas[clave[2]].valor.val[i] = valor[i];
         i += 1;
         goto ciclo;
                
@@ -218,12 +218,18 @@ void tdt_agregar(tdt* tabla, uint8_t* clave, uint8_t* valor) {
             n2 += 1;
             if(n2 < 256)
                 goto vaciarN2;
-        tabla->primera->entradas[(uint8_t)clave[0]] = st2;
+        tabla->primera->entradas[clave[0]] = st2;
         goto continuarN2;
         
     tdtN3Empty: 
-        st3 = (tdtN3 *)malloc(sizeof(tdtN3));     
-        st2->entradas[(uint8_t)clave[1]] = st3;
+        st3 = (tdtN3 *)malloc(sizeof(tdtN3));
+        uint16_t n3 = 0;
+        invalidar:
+            st3->entradas[n3].valido = 0;
+            n3 += 1;
+            if(n3 < 256)
+                goto invalidar;   
+        st2->entradas[clave[1]] = st3;
         goto continuarN3;
             
     salir:
@@ -234,32 +240,32 @@ void tdt_borrar(tdt* tabla, uint8_t* clave) {
     if(tabla->primera == NULL)
         goto salir;
         
-    tdtN2 *st2 = tabla->primera->entradas[(uint8_t)clave[0]];
+    tdtN2 *st2 = tabla->primera->entradas[clave[0]];
     
     if(st2 == NULL)
         goto salir;
     
-    tdtN3 *st3 = st2->entradas[(uint8_t)clave[1]];
+    tdtN3 *st3 = st2->entradas[clave[1]];
     
     if(st3 == NULL)
         goto salir;
     
     uint16_t i = 0;
 
-    if(st3->entradas[(uint8_t)clave[2]].valido == 0)
+    if(st3->entradas[clave[2]].valido == 0)
         goto salir;
     
     tabla->cantidad -= 1;
     vaciar: 
-    st3->entradas[(uint8_t)clave[2]].valor.val[(uint8_t)i] = 0;
+    st3->entradas[clave[2]].valor.val[i] = 0;
     i += 1;
     if(i < 15)
         goto vaciar;
-    st3->entradas[(uint8_t)clave[2]].valido = 0;
+    st3->entradas[clave[2]].valido = 0;
     
     i = 0;    
     checkTdtN3: 
-        if(st3->entradas[(uint8_t)i].valido == 1)
+        if(st3->entradas[i].valido == 1)
             goto salir;
         
         i += 1;
@@ -267,11 +273,11 @@ void tdt_borrar(tdt* tabla, uint8_t* clave) {
             goto checkTdtN3;
          
         free(st3);
-        st2->entradas[(uint8_t)clave[1]] = NULL;
+        st2->entradas[clave[1]] = NULL;
         
     i = 0;
     checkTdtN2: 
-        if(st2->entradas[(uint8_t)i] != NULL)
+        if(st2->entradas[i] != NULL)
            goto salir;
       
         i += 1;
@@ -279,11 +285,11 @@ void tdt_borrar(tdt* tabla, uint8_t* clave) {
             goto checkTdtN2;
         
         free(st2);
-        tabla->primera->entradas[(uint8_t)clave[0]] = NULL;
+        tabla->primera->entradas[clave[0]] = NULL;
         
     i = 0;
     checkTdtN1: 
-        if(tabla->primera->entradas[(uint8_t)i] != NULL)
+        if(tabla->primera->entradas[i] != NULL)
             goto salir;
         
         i += 1;
@@ -309,23 +315,23 @@ void tdt_imprimirTraducciones(tdt* tabla, FILE *pFile) {
             goto salir;
     
     printSt1Values:; 
-        tdtN2 *st2 = tabla->primera->entradas[(uint8_t)i];
+        tdtN2 *st2 = tabla->primera->entradas[i];
         if(st2 == NULL)
             goto continuarSt1;
             
     printSt2Values:; 
-        tdtN3 *st3 = st2->entradas[(uint8_t)j]; 
+        tdtN3 *st3 = st2->entradas[j]; 
         if(st3 == NULL)
             goto continuarSt2;
             
     printSt3Values: 
-        if(st3->entradas[(uint8_t)n].valido == 0)
+        if(st3->entradas[n].valido == 0)
             goto continuarSt3;
         clave c;
         c.cla[0] = i;
         c.cla[1] = j;
         c.cla[2] = n;
-        uint8_t *pVal = st3->entradas[(uint8_t)n].valor.val;
+        uint8_t *pVal = st3->entradas[n].valor.val;
         fprintf(pFile, "%02X%02X%02X => %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n", c.cla[0], c.cla[1], c.cla[2], pVal[0], pVal[1], pVal[2], pVal[3], pVal[4], pVal[5], pVal[6], pVal[7], pVal[8], pVal[9], pVal[10], pVal[11], pVal[12], pVal[13], pVal[14]); //0 padding - 15 bytes - unsigned int - upper case
         goto continuarSt3;
          
@@ -386,17 +392,17 @@ maxmin* tdt_obtenerMaxMin(tdt* tabla) {
             goto salir;
     
     st1Values:; 
-        tdtN2 *st2 = tabla->primera->entradas[(uint8_t)i];
+        tdtN2 *st2 = tabla->primera->entradas[i];
         if(st2 == NULL)
             goto continuarSt1;
             
     st2Values:; 
-        tdtN3 *st3 = st2->entradas[(uint8_t)j]; 
+        tdtN3 *st3 = st2->entradas[j]; 
         if(st3 == NULL)
             goto continuarSt2;
             
     st3Values: 
-        if(st3->entradas[(uint8_t)n].valor.val[15] == 0)
+        if(st3->entradas[n].valor.val[15] == 0)
             goto continuarSt3;
             
         clave c;
@@ -423,11 +429,11 @@ maxmin* tdt_obtenerMaxMin(tdt* tabla) {
         uint8_t z = 0;
                
         verMayor:
-            if(st3->entradas[(uint8_t)n].valor.val[z] < mm->max_valor[z]) {
+            if(st3->entradas[n].valor.val[z] < mm->max_valor[z]) {
                 z = 0;
                 goto verMenor;
             }               
-            if(st3->entradas[(uint8_t)n].valor.val[z] > mm->max_valor[z]) {
+            if(st3->entradas[n].valor.val[z] > mm->max_valor[z]) {
                 goto esMayor;
             }               
             z += 1;
@@ -439,7 +445,7 @@ maxmin* tdt_obtenerMaxMin(tdt* tabla) {
         z = 0;    
                    
         loadMaxValue: 
-        mm->max_valor[z] = st3->entradas[(uint8_t)n].valor.val[z];
+        mm->max_valor[z] = st3->entradas[n].valor.val[z];
         z += 1;
         if(z < 15)
             goto loadMaxValue;
@@ -447,10 +453,10 @@ maxmin* tdt_obtenerMaxMin(tdt* tabla) {
         z = 0;       
                
         verMenor:
-            if(st3->entradas[(uint8_t)n].valor.val[z] > mm->min_valor[z]) {
+            if(st3->entradas[n].valor.val[z] > mm->min_valor[z]) {
                 goto continuarSt3;
             }
-            if(st3->entradas[(uint8_t)n].valor.val[z] < mm->min_valor[z]) {
+            if(st3->entradas[n].valor.val[z] < mm->min_valor[z]) {
                 goto esMenor;
             }               
             z += 1;
@@ -462,7 +468,7 @@ maxmin* tdt_obtenerMaxMin(tdt* tabla) {
         z = 0;
        
         loadMinValue: 
-        mm->min_valor[z] = st3->entradas[(uint8_t)n].valor.val[z];
+        mm->min_valor[z] = st3->entradas[n].valor.val[z];
         z += 1;
         if(z < 15)
             goto loadMinValue;
