@@ -1,22 +1,41 @@
 #include "tdt.h"
 
+/*
+Querido corrector de mi código fuente:
+
+Notará en la corrección que he dedicado mi tiempo a escribir el código con la "ayuda" de la etiqueta goto.
+
+Tomé el consejo de uno de los ayudantes de la materia de escribir el código enteramente en c para tener una idea del funcionamiento}}}}} Y (NINGÚN AYUDANTE ME DIJO ESTO) de un ex-alumno de la materia de escribirlo usando goto y al más bajo nivel posible, para que fuese más sencillo el paso a asm. 
+
+Lo cierto es que pienso que ambas ideas me sirvieron. Salvo algunas etiquetas extra, todas las que definí en el en c, estan en asm. Y fué bastante directo el paso de un código al otro.
+
+Aun así, vale aclarar que no hice esto por no conocer la existencia de sintáxis más sencilla como un while o for. Tengo bien en claro que esto en la vida real no se utiliza y no lo digo por escucharlo de alguien si no porque actualmente me desempeño en el rubro y no solo no la uso si no que en la mayoria de los lenguajes actuales como bien sabrá ni siquiera existe.
+
+En resumen, como me enganché haciendo el código de esta manera, me pareció entretendo y me pasé de la raya y tambien escribí las funciones en c que no iban en asm. Si esto le parece que no está bueno y requiere que pase el código a algo más actualizado, lo haré sin reproches. Sobre todo si no tiene ni ganas de leer algo con goto's, que está en todo su derecho, y si o si tiene que revisarlo. 
+
+También debo reconocer que fuí alertado de esta práctica por un ayudante sin saber que no estaba bueno para ustedes (es decir, para mi tampoco, pero al menos en mi caso, c no es el que me cuesta más escribir, sino asm). La misma alerta mencionada, la recibí con tiempo, pero ese tiempo me llevó hacer el código en asm y no pude cambiar el de c y testearlo nuevamente. Sabiendo que además...pasar de goto's a algo mejor puede ser más dificil que a la inversa. 
+
+Ahora si, lo dejo con el código escrito como mencioné. Reconozco que es una porqueria para leer. Pero peor es <3 asm <3.
+
+*/
+
 tdt* tdt_crear(char* identificacion) {
     tdt *tabla = (tdt *)malloc(sizeof(tdt));
 
     char* myId = NULL;
 
     if(identificacion != NULL) {
-        char letra = 0;
+        char letra;
         int contadorBytes = 0;
         contar:
             letra = identificacion[contadorBytes];
             contadorBytes += 1;
-            if(letra != 0)
+            if((int)letra != 0)
                 goto contar;
 
             contadorBytes += 1;
 
-        char* myId = (char *)malloc(contadorBytes);
+        myId = (char *)malloc(contadorBytes);
 
         strcpy(myId, identificacion);
     }
@@ -37,7 +56,7 @@ void tdt_recrear(tdt** tabla, char* identificacion) {
         contar:
             letra = identificacion[contadorBytes];
             contadorBytes += 1;
-            if(letra != 0)
+            if((int)letra != 0)
                 goto contar;
 
             contadorBytes += 1;

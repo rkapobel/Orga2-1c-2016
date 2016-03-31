@@ -6,7 +6,7 @@
   extern tdt_borrar
   
 ; FUNCIONES
-   global tdt_crear
+;   global tdt_crear
 ;  global tdt_recrear
 ;  global tdt_cantidad
 ;  global tdt_agregarBloque
