@@ -35,37 +35,75 @@ bloque b3 = {{3,5,3},{3,4,5,6,7,8,4,5,0,2,3,4,5,6,5}};
 bloque* b[4] = {&b1,&b2,&b3,0};
 
 int main (void){
-    tdt* tabla = tdt_crear("sa");
+    //tdt* tabla = tdt_crear("sa");
     
-    tdt_destruir(&(tabla));
+    //tdt_destruir(&(tabla));
+    
+    casoC();
     
     return 0;
 }
 
-void printmaxmin(FILE *pFile, tdt* tabla) {
-    int i;
-    maxmin *mm = tdt_obtenerMaxMin(tabla);
-    fprintf(pFile,"max_clave = %i",mm->max_clave[0]);
-    for(i=1;i<3;i++) fprintf(pFile,"-%i",mm->max_clave[i]);
-    fprintf(pFile,"\n");
-    fprintf(pFile,"min_clave = %i",mm->min_clave[0]);
-    for(i=1;i<3;i++) fprintf(pFile,"-%i",mm->min_clave[i]);
-    fprintf(pFile,"\n");
-    fprintf(pFile,"max_valor = %i",mm->max_valor[0]);
-    for(i=1;i<15;i++) fprintf(pFile,"-%i",mm->max_valor[i]);
-    fprintf(pFile,"\n");
-    fprintf(pFile,"min_valor = %i",mm->min_valor[0]);
-    for(i=1;i<15;i++) fprintf(pFile,"-%i",mm->min_valor[i]);
-    fprintf(pFile,"\n");
-    free(mm);
+void casoC() {
+    tdt *tabla = tdt_crear("sa");
+
+    tdt_borrar(tabla,clave1);
+    tdt_borrar(tabla,clave2);
+
+    tdt_borrar(tabla,clave3);
+
+    tdt_borrarBloque(tabla,&b1);
+
+    tdt_borrarBloque(tabla,&b2);
+    tdt_borrarBloque(tabla,&b3);
+
+    tdt_borrarBloques(tabla,(bloque**)&b);
+
+    tdt_agregar(tabla, clave1, valor1);
+    tdt_agregar(tabla, clave2, valor2);
+    tdt_agregar(tabla, clave3, valor3);
+    tdt_agregar(tabla, clave4, valor4);
+    tdt_agregar(tabla, clave5, valor5);
+    tdt_agregar(tabla, clave6, valor6);
+    tdt_agregar(tabla, clave7, valor7);   
+
+    tdt_borrar(tabla,clave2);
+    tdt_borrar(tabla,clave3);
+    tdt_borrar(tabla,clave4);
+    tdt_borrar(tabla,clave5);
+
+    tdt_agregar(tabla, clave1, valor1);
+
+    tdt_agregar(tabla, clave2, valor2);
+
+    tdt_agregar(tabla, clave3, valor3);
+
+    tdt_agregar(tabla, clave4, valor4);
+
+    tdt_agregar(tabla, clave5, valor5);
+
+    tdt_agregar(tabla, clave6, valor6);
+
+    tdt_agregar(tabla, clave7, valor7);   
+
+    tdt_agregarBloque(tabla,&b1);
+    tdt_agregarBloque(tabla,&b1);
+    tdt_agregarBloque(tabla,&b1);
+
+    tdt_agregarBloques(tabla,(bloque**)&b);
+    tdt_agregarBloques(tabla,(bloque**)&b);
+    tdt_agregarBloques(tabla,(bloque**)&b);
+
+    tdt_borrar(tabla,clave1);
+    tdt_borrar(tabla,clave2);
+    tdt_borrar(tabla,clave2);
+    tdt_borrar(tabla,clave3);
+    tdt_borrar(tabla,clave7);
+    tdt_borrarBloques(tabla,(bloque**)&b);
+
+    tdt_recrear(&tabla,"saaaaaaaaaaaaaaaaaa");
+    tdt_agregarBloques(tabla,(bloque**)&b);
+
+    tdt_destruir(&tabla);
 }
 
-void printBloque(FILE *pFile, bloque* b) {
-    int i;
-    fprintf(pFile,"%i",b->clave[0]);
-    for(i=1;i<3;i++) fprintf(pFile,"-%i",b->clave[i]);
-    fprintf(pFile," => ");
-    fprintf(pFile,"%i",b->valor[0]);
-    for(i=1;i<15;i++) fprintf(pFile,"-%i",b->valor[i]);
-    fprintf(pFile,"\n");  
-}
