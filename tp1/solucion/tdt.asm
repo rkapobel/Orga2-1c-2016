@@ -79,7 +79,7 @@ tdt_crear:
 .crearTdt:
     MOV RDI, TDT_SIZE ; piso identificacion 
 	CALL malloc
-	MOV QWORD [RAX + TDT_OFFSET_IDENTIFICACION], R12 ; tabla->identificacion = identificacion	
+	MOV [RAX + TDT_OFFSET_IDENTIFICACION], R12 ; tabla->identificacion = identificacion	
 	MOV QWORD [RAX + TDT_OFFSET_PRIMERA], NULL ; tabla->primera = NULL
 	MOV DWORD [RAX + TDT_OFFSET_CANTIDAD], ZERO ; tabla->cantidad = 0
 	
@@ -136,13 +136,13 @@ tdt_recrear:
     call free
     
 .pisar:
-    MOV QWORD [R13 + TDT_OFFSET_IDENTIFICACION], RBX ; pTabla->identificacion = myId
+    MOV [R13 + TDT_OFFSET_IDENTIFICACION], RBX ; pTabla->identificacion = myId
 
 .identificacionNull:
     MOV DWORD [R13 + TDT_OFFSET_CANTIDAD], ZERO
     
-    XOR R14, R14 ; i uso R14W? puedo sumarlo a R13?
-    XOR R15, R15 ; j uso R15W? puedo sumarlo a R13?
+    XOR R14, R14 ; i
+    XOR R15, R15 ; j
  
 .vaciarSt1:    
     MOV RCX, [R13 + TDT_OFFSET_PRIMERA] ; pTabla->primera
@@ -328,7 +328,7 @@ tdt_traducir:
     
     MOV R8B, [R12 + 2] ; clave[2]
     XOR R9, R9
-    LEA R11, [R10 + R8*ADDRESS_SIZE]
+    LEA R11, [R10 + R8*ADDRESS_SIZE] ; sizeof(valorValido) = 2*ADDRESS_SIZE - a*(b + c) = a*b + a*c
     LEA R11, [R11 + R8*ADDRESS_SIZE] ; son 16 bytes por valor valido
     MOV R9B, [R11 + TDTN3_OFFSET_VALIDO] ; st3->entradas[clave[2]].valido
     CMP R9B, ZERO
@@ -341,7 +341,7 @@ tdt_traducir:
     LEA R11, [R11 + R8*ADDRESS_SIZE] ; son 16 bytes por valor valido
     LEA R11, [R11 + TDTN3_OFFSET_VALOR] 
     MOV R9B, [R11 + RCX] ; st3->entradas[clave[2]].valor.val[i];
-    MOV BYTE [R13 + RCX], R9B ; valor[i] = st3->entradas[clave[2]].valor.val[i];
+    MOV [R13 + RCX], R9B ; valor[i] = st3->entradas[clave[2]].valor.val[i];
     ADD RCX, 1
     CMP RCX, 15
     JL .ciclo
