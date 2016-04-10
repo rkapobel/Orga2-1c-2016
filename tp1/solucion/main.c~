@@ -3,107 +3,68 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-char *archivoCasoChico  =  "salida.caso.chico.txt";
-char *archivoCasoGrande =  "salida.caso.grande.txt";
-void casoC();
-void casoG();
+char *archivoMain  =  "salida.main.txt";
 
-uint8_t clave1[3] = {1,2,3};
-uint8_t valor1[15] = {3,4,5,6,7,8,4,5,63,2,3,4,5,6,5};
-uint8_t clave2[3] = {2,2,2};
-uint8_t valor2[15] = {3,4,5,3,7,8,4,5,63,2,3,4,5,6,5};
-uint8_t clave3[3] = {3,2,3};
-uint8_t valor3[15] = {3,4,5,6,7,8,4,5,0,2,3,4,5,6,5};
-uint8_t clave4[3] = {8,9,3};
-uint8_t valor4[15] = {3,4,5,6,7,8,4,5,63,2,3,4,5,6,5};
-uint8_t clave5[3] = {0,2,2};
-uint8_t valor5[15] = {63,4,5,2,7,8,4,5,0,2,3,4,5,6,5};
-uint8_t clave6[3] = {7,2,3};
-uint8_t valor6[15] = {3,4,5,6,7,8,4,5,63,2,3,4,5,6,5};
-uint8_t clave7[3] = {8,2,3};
-uint8_t valor7[15] = {9,4,5,6,7,8,4,5,63,2,3,4,5,6,5};
+bloque b1 = {{0x05,0x05,0x05},{0x12,0x34,0x56,0x78,0x9A,0xBC,0xDE,0xF1,0x23,0x45,0x67,0x89,0xAB,0xCD,0xEF}};
+bloque b2 = {{0xFF,0xFF,0xFF},{0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xAA,0xBB,0xCC,0xDD,0xEE,0xFF}};
+bloque b3 = {{0x53,0xFF,0xAA},{0x11,0x12,0x22,0x33,0x34,0x44,0x55,0x56,0x66,0x77,0x78,0x88,0x99,0x9A,0xAA}};
+bloque b4 = {{0x10,0xEE,0x05},{0x11,0x11,0x22,0x22,0x33,0x33,0x44,0x44,0x55,0x55,0x66,0x66,0x77,0x77,0x88}};
+
+bloque* b[5] = {&b1,&b2,&b3,&b4,0};
 
 uint8_t claveMin[3] = {0,0,0};
-uint8_t claveMax[3] = {255,255,255};
-uint8_t valorMax[15] = {255,255,255,255,255,255,255,255,255,255,255,255,255,255,255};
+uint8_t claveMax[3] = {0xFF,0xFF,0xFF};
+uint8_t valorMax[15] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
 uint8_t valorMin[15] = {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0};
 
-bloque b1 = {{1,5,3},{3,4,5,6,7,8,4,5,6,2,3,4,5,0,5}};
-bloque b2 = {{2,5,2},{3,4,5,3,7,8,4,3,0,2,0,4,5,6,5}};
-bloque b3 = {{3,5,3},{3,4,5,6,7,8,4,5,0,2,3,4,5,6,5}};
-
-bloque* b[4] = {&b1,&b2,&b3,0};
+void printmaxmin(FILE *pFile, tdt* tabla);
 
 int main (void){
-    //tdt* tabla = tdt_crear("sa");
+    FILE *pFile;
+
+    tdt *tabla = tdt_crear("pepe");    
+    tdt_agregar(tabla,claveMin,valorMax);
+    tdt_agregar(tabla,claveMax,valorMin);
     
-    //tdt_destruir(&(tabla));
+    tdt_agregarBloques(tabla, (bloque**)&b);
     
-    casoC();
+    tdt_borrarBloque(tabla,&b3);
+    
+    tdt_borrarBloque(tabla,&b2);
+    
+    pFile = fopen(archivoMain, "w");
+    
+    fprintf(pFile, "Imprimiento máximos y minimos:\n");
+    printmaxmin(pFile, tabla);
+    
+    fprintf(pFile, "Imprimiento traducciones:\n");
+    tdt_imprimirTraducciones(tabla, pFile);
+    
+    fprintf(pFile, "Cantidad de traducciones: %d\n", tdt_cantidad(tabla));
+    
+    fclose(pFile);
+    
+    tdt_destruir(&tabla);
     
     return 0;
 }
 
-void casoC() {
-    tdt *tabla = tdt_crear("sa");
-
-    tdt_borrar(tabla,clave1);
-    tdt_borrar(tabla,clave2);
-
-    tdt_borrar(tabla,clave3);
-
-    tdt_borrarBloque(tabla,&b1);
-
-    tdt_borrarBloque(tabla,&b2);
-    tdt_borrarBloque(tabla,&b3);
-
-    tdt_borrarBloques(tabla,(bloque**)&b);
-
-    tdt_agregar(tabla, clave1, valor1);
-    tdt_agregar(tabla, clave2, valor2);
-    tdt_agregar(tabla, clave3, valor3);
-    tdt_agregar(tabla, clave4, valor4);
-    tdt_agregar(tabla, clave5, valor5);
-    tdt_agregar(tabla, clave6, valor6);
-    tdt_agregar(tabla, clave7, valor7);   
-
-    tdt_borrar(tabla,clave2);
-    tdt_borrar(tabla,clave3);
-    tdt_borrar(tabla,clave4);
-    tdt_borrar(tabla,clave5);
-
-    tdt_agregar(tabla, clave1, valor1);
-
-    tdt_agregar(tabla, clave2, valor2);
-
-    tdt_agregar(tabla, clave3, valor3);
-
-    tdt_agregar(tabla, clave4, valor4);
-
-    tdt_agregar(tabla, clave5, valor5);
-
-    tdt_agregar(tabla, clave6, valor6);
-
-    tdt_agregar(tabla, clave7, valor7);   
-
-    tdt_agregarBloque(tabla,&b1);
-    tdt_agregarBloque(tabla,&b1);
-    tdt_agregarBloque(tabla,&b1);
-
-    tdt_agregarBloques(tabla,(bloque**)&b);
-    tdt_agregarBloques(tabla,(bloque**)&b);
-    tdt_agregarBloques(tabla,(bloque**)&b);
-
-    tdt_borrar(tabla,clave1);
-    tdt_borrar(tabla,clave2);
-    tdt_borrar(tabla,clave2);
-    tdt_borrar(tabla,clave3);
-    tdt_borrar(tabla,clave7);
-    tdt_borrarBloques(tabla,(bloque**)&b);
-
-    tdt_recrear(&tabla,"saaaaaaaaaaaaaaaaaa");
-    tdt_agregarBloques(tabla,(bloque**)&b);
-
-    tdt_destruir(&tabla);
+void printmaxmin(FILE *pFile, tdt* tabla) {
+    int i;
+    maxmin *mm = tdt_obtenerMaxMin(tabla);
+    fprintf(pFile,"max_clave = %i",mm->max_clave[0]);
+    for(i=1;i<3;i++) fprintf(pFile,"-%i",mm->max_clave[i]);
+    fprintf(pFile,"\n");
+    fprintf(pFile,"min_clave = %i",mm->min_clave[0]);
+    for(i=1;i<3;i++) fprintf(pFile,"-%i",mm->min_clave[i]);
+    fprintf(pFile,"\n");
+    fprintf(pFile,"max_valor = %i",mm->max_valor[0]);
+    for(i=1;i<15;i++) fprintf(pFile,"-%i",mm->max_valor[i]);
+    fprintf(pFile,"\n");
+    fprintf(pFile,"min_valor = %i",mm->min_valor[0]);
+    for(i=1;i<15;i++) fprintf(pFile,"-%i",mm->min_valor[i]);
+    fprintf(pFile,"\n");
+    free(mm);
 }
+
 

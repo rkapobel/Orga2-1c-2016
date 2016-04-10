@@ -406,10 +406,10 @@ tdt_destruir:
     PUSH RBP
 	MOV RBP, RSP
     PUSH RBX
-    SUB RSP, 8 ; alineado
+    PUSH R12 ; alineado
     
     MOV RBX, [RDI] ; tdt* pTabla = *tabla
-    MOV RSI, RDI
+    MOV R12, RDI ; guardar tabla
     MOV RDI, [RBX + TDT_OFFSET_IDENTIFICACION] ; char *myId = pTabla->identificacion
     
     CMP RDI, NULL
@@ -417,14 +417,14 @@ tdt_destruir:
     CALL free
     
 .continuar:
-    MOV RDI, RSI
+    MOV RDI, R12 ; recuperar tabla
     MOV RSI, NULL
     CALL tdt_recrear
     
     MOV RDI, RBX
     CALL free
     
-    ADD RSP, 8
+    POP R12
     POP RBX
     POP RBP
     RET 
