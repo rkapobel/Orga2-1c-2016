@@ -1,2 +1,2 @@
-# Organización del computador II - 2c - 2016
+# Organización del computador II - tp1 - 1c - 2016
 
